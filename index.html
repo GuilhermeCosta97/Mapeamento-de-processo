@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caterpillar - Mapeamento de Processos</title>
+    <title>Caterpillar - Produtividade CME</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23111111'/><polygon points='15,85 50,15 85,85' fill='%23FFCD00'/><polygon points='38,62 50,38 62,62' fill='%23111111'/><rect x='25' y='68' width='50' height='8' fill='%23ffffff'/></svg>">
     
     <style>
@@ -25,11 +25,13 @@
             padding: 20px;
             display: flex;
             justify-content: center;
+            align-items: center;
+            min-height: 90vh;
         }
 
         .container {
             width: 100%;
-            max-width: 950px;
+            max-width: 600px;
             background: var(--card-bg);
             padding: 30px;
             border-radius: 4px; 
@@ -37,63 +39,15 @@
             box-shadow: 0 6px 20px rgba(0,0,0,0.5);
         }
 
-        h1, h2 {
+        h1 { 
+            color: var(--cat-yellow);
+            font-size: 22px;
+            margin-bottom: 30px;
+            margin-top: 10px;
             text-align: center;
-            margin-bottom: 25px;
             text-transform: uppercase;
             font-weight: 800;
             letter-spacing: 1.5px;
-        }
-
-        h1 { 
-            color: var(--cat-yellow);
-            padding-bottom: 10px; 
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        h2 {
-            font-size: 18px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-            color: var(--text-color);
-            margin-top: 30px;
-        }
-
-        /* ESTILO DO MENU DE ABAS */
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-
-        .tab-btn {
-            background-color: #333;
-            color: var(--muted-text);
-            border: 1px solid var(--border-color);
-            padding: 12px 20px;
-            font-weight: bold;
-            font-size: 13px;
-            cursor: pointer;
-            transition: 0.2s;
-            border-radius: 4px;
-            flex: 1;
-        }
-
-        .tab-btn.active {
-            background-color: var(--cat-yellow);
-            color: var(--cat-black);
-            border-color: var(--cat-yellow);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
         }
 
         .form-group {
@@ -106,6 +60,10 @@
         .input-box {
             display: flex;
             flex-direction: column;
+        }
+
+        .full-width {
+            grid-column: span 2;
         }
 
         label {
@@ -134,7 +92,7 @@
         .actions {
             display: flex;
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         button {
@@ -145,7 +103,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: 0.3s, 0.1s;
+            transition: 0.2s;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -154,9 +112,6 @@
 
         .btn-start { background-color: var(--cat-yellow); color: var(--cat-black); }
         .btn-start:hover { background-color: #e6b800; }
-
-        .btn-next { background-color: #e6b800; color: var(--text-color); border: 1px solid #555; }
-        .btn-next:hover { background-color: #e6b800; }
 
         .btn-end { background-color: #d9534f; color: white; }
         .btn-end:hover { background-color: #c9302c; }
@@ -173,428 +128,94 @@
             padding: 15px;
             border-left: 4px solid var(--cat-yellow);
             border-radius: 4px;
-            margin-bottom: 30px;
             font-size: 15px;
             line-height: 1.5;
         }
 
-        .table-container {
-            overflow-x: auto;
-        }
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+                min-height: 95vh;
+            }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 13px;
-        }
+            .container {
+                padding: 20px 15px;
+                box-shadow: none;
+            }
 
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-            vertical-align: middle;
-        }
+            h1 {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
 
-        th {
-            background-color: var(--cat-black);
-            color: var(--cat-yellow);
-            text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 0.5px;
-        }
+            .form-group {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
 
-        tr:hover { background-color: #2d2d2d; }
+            .full-width {
+                grid-column: span 1;
+            }
 
-        .alerta-sobra {
-            color: #ff4d4d;
-            font-weight: bold;
-        }
+            input {
+                padding: 14px 12px;
+                font-size: 16px;
+            }
 
-        .clear-btn {
-            background-color: transparent;
-            color: #d9534f;
-            border: 1px solid #d9534f;
-            padding: 8px 15px;
-            font-size: 11px;
-            margin-top: 15px;
-            float: right;
-            cursor: pointer;
-            border-radius: 4px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-        .clear-btn:hover { background-color: #d9534f; color: white; }
+            .actions {
+                flex-direction: column;
+                gap: 12px;
+            }
 
-        .btn-delete-row {
-            padding: 6px 10px; 
-            font-size: 11px; 
-            background-color: #d9534f; 
-            color: white; 
-            border-radius: 4px; 
-            width: auto; 
-            font-weight: bold;
-            flex: none;
+            button {
+                padding: 16px;
+                font-size: 15px;
+                width: 100%;
+            }
+
+            .status-panel {
+                font-size: 14px;
+                padding: 12px;
+            }
         }
-        .btn-delete-row:hover { background-color: #c9302c; }
+        
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Controle Operacional CME</h1>
+    <h1>Produtividade por Fornecedor - CME</h1>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="alternarAba('turno')">Mapeamento de Turno Geral</button>
-        <button class="tab-btn" onclick="alternarAba('fornecedor')">Tempos por Fornecedor (Individual)</button>
+    <div class="form-group">
+        <div class="input-box">
+            <label for="fornOperador">Funcionário (Nome ou RE)</label>
+            <input type="text" id="fornOperador" placeholder="Identifique-se">
+        </div>
+        <div class="input-box">
+            <label for="fornNome">Fornecedor</label>
+            <input type="text" id="fornNome" placeholder="Ex: Bosch, SKF">
+        </div>
+        <div class="input-box full-width">
+            <label for="fornCaixas">Quantidade de Caixas</label>
+            <input type="number" id="fornCaixas" placeholder="Quantidade total a separar">
+        </div>
     </div>
 
-    <div id="conteudoTurno" class="tab-content active">
-        <div class="form-group">
-            <div class="input-box">
-                <label for="inputQtdFornecedores">Quantidade de Fornecedores do Dia</label>
-                <input type="number" id="inputQtdFornecedores" placeholder="Ex: 5">
-            </div>
-            <div class="input-box">
-                <label for="inputCaixas">Total de Caixas do Dia</label>
-                <input type="number" id="inputCaixas" placeholder="Ex: 650">
-            </div>
-            <div class="input-box">
-                <label for="inputPessoas">Quantidade de Pessoas no Turno</label>
-                <input type="number" id="inputPessoas" placeholder="Mão de obra do dia" value="3">
-            </div>
-            <div class="input-box">
-                <label for="inputDataProcesso">Data do Processo</label>
-                <input type="date" id="inputDataProcesso">
-            </div>
-            <div class="input-box" style="grid-column: span 2;">
-                <label for="inputPedidosSobrando" style="color: #ff6666;">Pedidos Pendentes (Não deu tempo de recolher no estoque? Deixe 0 se terminou tudo)</label>
-                <input type="number" id="inputPedidosSobrando" value="0" placeholder="Ex: 15">
-            </div>
-        </div>
-
-        <div class="actions">
-            <button id="btnIniciar" class="btn-start" onclick="iniciarTurno()">1. Iniciar Separação</button>
-            <button id="btnConferencia" class="btn-next" onclick="iniciarConferencia()" disabled>2. Ir para Conferência (22:00)</button>
-            <button id="btnFinalizar" class="btn-end" onclick="finalizarTurno()" disabled>3. Finalizar e Despachar</button>
-        </div>
-
-        <div id="statusPanel" class="status-panel">
-            <b>Status:</b> Pronto para iniciar o monitoramento do turno. Insira os dados consolidados acima.
-        </div>
-
-        <h2>Dados Consolidados por Turno</h2>
-        
-        <div class="input-box" style="margin-bottom: 20px; max-width: 300px;">
-            <label for="inputBuscaData">Pesquisar por Data (DD/MM/AAAA)</label>
-            <input type="text" id="inputBuscaData" placeholder="Ex: 11/07/2026" oninput="atualizarTabela()">
-        </div>
-
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Fornecedores</th>
-                        <th>Total Caixas</th>
-                        <th>Equipe</th>
-                        <th>Tempo Sep.</th>
-                        <th>Tempo Conf.</th>
-                        <th>Tempo Total</th>
-                        <th>Produtividade Média</th>
-                        <th>Pedidos Pendentes</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="tabelaCorpo">
-                </tbody>
-            </table>
-        </div>
-        
-        <button class="clear-btn" onclick="limparRegistros()">Limpar Histórico Completo</button>
+    <div class="actions">
+        <button id="btnFornIniciar" class="btn-start" onclick="iniciarForn()">1. Iniciar Separação</button>
+        <button id="btnFornFinalizar" class="btn-end" onclick="finalizarForn()" disabled>2. Finalizar e Enviar</button>
     </div>
 
-    <div id="conteudoFornecedor" class="tab-content">
-        <div class="form-group">
-            <div class="input-box">
-                <label for="fornOperador">Nome ou Registro do Funcionário</label>
-                <input type="text" id="fornOperador" placeholder="Ex: João / RE 123456">
-            </div>
-            <div class="input-box">
-                <label for="fornNome">Nome do Fornecedor</label>
-                <input type="text" id="fornNome" placeholder="Ex: Bosch / SKF">
-            </div>
-            <div class="input-box" style="grid-column: span 2;">
-                <label for="fornCaixas">Quantidade de Caixas deste Fornecedor</label>
-                <input type="number" id="fornCaixas" placeholder="Ex: 25">
-            </div>
-        </div>
-
-        <div class="actions">
-            <button id="btnFornIniciar" class="btn-start" onclick="iniciarForn()">1. Iniciar Separação do Fornecedor</button>
-            <button id="btnFornFinalizar" class="btn-end" onclick="finalizarForn()" disabled>2. Finalizar Fornecedor</button>
-        </div>
-
-        <div id="statusPanelForn" class="status-panel">
-            <b>Status:</b> Pronto para medir produtividade de fornecedor individual. Insira as credenciais acima.
-        </div>
-
-        <h2>Produtividade Individual por Fornecedor</h2>
-
-        <div class="form-group" style="grid-template-columns: 1fr 1fr; max-width: 620px; margin-bottom: 20px;">
-            <div class="input-box">
-                <label for="buscaFornOp">Filtrar por Operador</label>
-                <input type="text" id="buscaFornOp" placeholder="Ex: João" oninput="atualizarTabelaForn()">
-            </div>
-            <div class="input-box">
-                <label for="buscaFornNome">Filtrar por Fornecedor</label>
-                <input type="text" id="buscaFornNome" placeholder="Ex: Bosch" oninput="atualizarTabelaForn()">
-            </div>
-        </div>
-
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Operador</th>
-                        <th>Fornecedor</th>
-                        <th>Caixas</th>
-                        <th>Tempo Total</th>
-                        <th>Velocidade Média</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="tabelaCorpoForn">
-                </tbody>
-            </table>
-        </div>
-
-        <button class="clear-btn" onclick="limparRegistrosForn()">Limpar Histórico Fornecedores</button>
+    <div id="statusPanelForn" class="status-panel">
+        <b>Status:</b> Pronto para iniciar. Insira os dados acima para rodar o cronômetro.
     </div>
-
 </div>
 
 <script>
-    // ================= VARIÁVEIS GERAIS =================
-    let tInicioGeral = null;
-    let tInicioConferencia = null;
-    let tempoSeparacaoMinutos = 0;
-
-    // VARIÁVEIS (FORNECEDORES)
     let tFornInicio = null;
-
-    // Configura a data de hoje no input automaticamente
-    document.getElementById("inputDataProcesso").value = new Date().toISOString().split('T')[0];
-
-    // Alternar abas do layout
-    function alternarAba(aba) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-        if (aba === 'turno') {
-            document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
-            document.getElementById('conteudoTurno').classList.add('active');
-        } else {
-            document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
-            document.getElementById('conteudoFornecedor').classList.add('active');
-        }
-    }
-
-    // ================= CONTROLE DE ESTADOS DO TURNO GERAL =================
-    function obterHistorico() {
-        const dados = localStorage.getItem("historicoTurnosExpedicao");
-        return dados ? JSON.parse(dados) : [];
-    }
-
-    function iniciarTurno() {
-        const fornecedores = document.getElementById("inputQtdFornecedores").value;
-        const caixas = document.getElementById("inputCaixas").value;
-
-        if (!fornecedores || !caixas) {
-            alert("Preencha a quantidade de fornecedores e o total de caixas antes de iniciar o turno!");
-            return;
-        }
-
-        tInicioGeral = Date.now();
-        const horaFormatada = new Date(tInicioGeral).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        
-        const textoStatus = `⏳ <b>Turno em andamento!</b><br>Processando <b>${caixas} caixas</b> vindas de <b>${fornecedores} fornecedores</b> distintos.<br>Processo iniciado em tempo real às: <b>${horaFormatada} hrs</b>.`;
-        document.getElementById("statusPanel").innerHTML = textoStatus;
-        
-        document.getElementById("btnIniciar").disabled = true;
-        document.getElementById("btnConferencia").disabled = false;
-        bloquearInputs(true);
-
-        salvarEstadoAtual(textoStatus);
-    }
-
-    function iniciarConferencia() {
-        tInicioConferencia = Date.now();
-        const diferenca = tInicioConferencia - tInicioGeral;
-        tempoSeparacaoMinutos = Math.round((diferenca / 1000) / 60);
-
-        const textoStatus = `🔍 <b>Fase 2: Conferência e Fechamento Iniciados!</b><br>A etapa de recolhimento durou <b>${tempoSeparacaoMinutos} minutos</b>.<br>A equipe mudou de função para fechar as caixas vazias trazidas pela empilhadeira.`;
-        document.getElementById("statusPanel").innerHTML = textoStatus;
-        
-        document.getElementById("btnConferencia").disabled = true;
-        document.getElementById("btnFinalizar").disabled = false;
-
-        salvarEstadoAtual(textoStatus);
-    }
-
-    function finalizarTurno() {
-        const tFimGeral = Date.now();
-        const diferencaConferencia = tFimGeral - tInicioConferencia;
-        const tempoConferenciaMinutos = Math.round((diferencaConferencia / 1000) / 60);
-        
-        const tempoTotalMinutos = tempoSeparacaoMinutos + tempoConferenciaMinutos;
-
-        const fornecedores = document.getElementById("inputQtdFornecedores").value;
-        const caixas = Number(document.getElementById("inputCaixas").value);
-        const pessoas = Number(document.getElementById("inputPessoas").value) || 1;
-        const dataProcesso = document.getElementById("inputDataProcesso").value;
-        const pedidosSobrando = Number(document.getElementById("inputPedidosSobrando").value) || 0;
-
-        const tempoTotalHoras = tempoTotalMinutos / 60;
-        const homemHoraTotal = tempoTotalHoras * pessoas;
-        const caixasPorHH = homemHoraTotal > 0 ? (caixas / homemHoraTotal).toFixed(1) : 0;
-
-        const novoTurno = {
-            data: dataProcesso.split('-').reverse().join('/'),
-            fornecedores: `${fornecedores} forn.`,
-            caixas: caixas,
-            pessoas: `${pessoas} op.`,
-            tempoSep: `${tempoSeparacaoMinutos} min`,
-            tempoConf: `${tempoConferenciaMinutos} min`,
-            tempoTotal: `${tempoTotalMinutos} min`,
-            produtividade: `${caixasPorHH} cx/h por pessoa`,
-            sobra: pedidosSobrando
-        };
-
-        const historicoAtual = obterHistorico();
-        historicoAtual.push(novoTurno);
-        localStorage.setItem("historicoTurnosExpedicao", JSON.stringify(historicoAtual));
-
-        localStorage.removeItem("estadoTurnoAtual");
-
-        atualizarTabela();
-        bloquearInputs(false);
-        resetarBotoes();
-        limparInputs();
-
-        document.getElementById("statusPanel").innerHTML = `✅ <b>Turno Finalizado e Registrado!</b> Dados computados com sucesso.`;
-    }
-
-    function atualizarTabela() {
-        const corpo = document.getElementById("tabelaCorpo");
-        corpo.innerHTML = "";
-        const historicoAtual = obterHistorico();
-        const termoBusca = document.getElementById("inputBuscaData") ? document.getElementById("inputBuscaData").value.trim() : "";
-
-        historicoAtual.forEach((reg, index) => {
-            if (termoBusca && !reg.data.includes(termoBusca)) {
-                return; 
-            }
-
-            const classeSobra = reg.sobra > 0 ? 'class="alerta-sobra"' : '';
-            const textoSobra = reg.sobra > 0 ? `⚠️ ${reg.sobra} pendentes` : '0 (Zerado)';
-
-            const linha = `<tr>
-                <td>${reg.data}</td>
-                <td>${reg.fornecedores}</td>
-                <td>${reg.caixas}</td>
-                <td>${reg.pessoas}</td>
-                <td>${reg.tempoSep}</td>
-                <td>${reg.tempoConf}</td>
-                <td>${reg.tempoTotal}</td>
-                <td><strong>${reg.produtividade}</strong></td>
-                <td ${classeSobra}>${textoSobra}</td>
-                <td>
-                    <button class="btn-delete-row" onclick="excluirItem(${index})">✕</button>
-                </td>
-            </tr>`;
-            corpo.innerHTML += linha;
-        });
-    }
-
-    function excluirItem(index) {
-        let historicoAtual = obterHistorico();
-        if (confirm(`Deseja realmente excluir o registro do dia ${historicoAtual[index].data}?`)) {
-            historicoAtual.splice(index, 1);
-            localStorage.setItem("historicoTurnosExpedicao", JSON.stringify(historicoAtual));
-            atualizarTabela();
-        }
-    }
-
-    function bloquearInputs(status) {
-        document.getElementById("inputQtdFornecedores").disabled = status;
-        document.getElementById("inputCaixas").disabled = status;
-        document.getElementById("inputPessoas").disabled = status;
-        document.getElementById("inputDataProcesso").disabled = status;
-    }
-
-    function resetarBotoes() {
-        document.getElementById("btnIniciar").disabled = false;
-        document.getElementById("btnConferencia").disabled = true;
-        document.getElementById("btnFinalizar").disabled = true;
-    }
-
-    function limparInputs() {
-        document.getElementById("inputQtdFornecedores").value = "";
-        document.getElementById("inputCaixas").value = "";
-        document.getElementById("inputPessoas").value = "3";
-        document.getElementById("inputPedidosSobrando").value = "0";
-        document.getElementById("inputDataProcesso").value = new Date().toISOString().split('T')[0];
-    }
-
-    function limparRegistros() {
-        if (confirm("Tem certeza de que deseja apagar todo o histórico de turnos mapeados?")) {
-            localStorage.removeItem("historicoTurnosExpedicao");
-            atualizarTabela();
-            document.getElementById("statusPanel").innerHTML = "<b>Status:</b> Histórico deletado com sucesso. Pronto para novos registros.";
-        }
-    }
-
-    function salvarEstadoAtual(statusTexto) {
-        const estado = {
-            tInicioGeral: tInicioGeral,
-            tInicioConferencia: tInicioConferencia,
-            tempoSeparacaoMinutos: tempoSeparacaoMinutos,
-            statusPanelHtml: statusTexto,
-            btnIniciarDisabled: document.getElementById("btnIniciar").disabled,
-            btnConferenciaDisabled: document.getElementById("btnConferencia").disabled,
-            btnFinalizarDisabled: document.getElementById("btnFinalizar").disabled
-        };
-        localStorage.setItem("estadoTurnoAtual", JSON.stringify(estado));
-    }
-
-    function verificarProcessoPendente() {
-        const estadoSalvo = localStorage.getItem("estadoTurnoAtual");
-        if (estadoSalvo) {
-            const estado = JSON.parse(estadoSalvo);
-            if (confirm("Detectamos que um mapeamento de turno estava em andamento. Deseja retomar de onde parou?")) {
-                tInicioGeral = estado.tInicioGeral;
-                tInicioConferencia = estado.tInicioConferencia;
-                tempoSeparacaoMinutos = estado.tempoSeparacaoMinutos;
-
-                document.getElementById("btnIniciar").disabled = estado.btnIniciarDisabled;
-                document.getElementById("btnConferencia").disabled = estado.btnConferenciaDisabled;
-                document.getElementById("btnFinalizar").disabled = estado.btnFinalizarDisabled;
-                document.getElementById("statusPanel").innerHTML = estado.statusPanelHtml;
-                
-                bloquearInputs(true);
-            } else {
-                localStorage.removeItem("estadoTurnoAtual");
-            }
-        }
-    }
-
-    // ================= CONTROLE DE ESTADOS DE FORNECEDORES (TELA 2) =================
-    function obterHistoricoForn() {
-        const dados = localStorage.getItem("historicoFornecedoresCME");
-        return dados ? JSON.parse(dados) : [];
-    }
+    
+    const URL_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbyT6aCdMkO--7ZXcuPRM_1wNgGOLLgqtSLacwBjERO6iJcncVv2xZPTSuwqki1dK8J8Sw/exec";
 
     function iniciarForn() {
         const operador = document.getElementById("fornOperador").value.trim();
@@ -602,99 +223,75 @@
         const caixas = document.getElementById("fornCaixas").value;
 
         if (!operador || !fornecedor || !caixas) {
-            alert("Preencha o nome do operador, o nome do fornecedor e a quantidade de caixas!");
+            alert("Atenção: Preencha todos os campos antes de iniciar!");
             return;
         }
 
         tFornInicio = Date.now();
         const horaFormatada = new Date(tFornInicio).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
-        const textoStatus = `⏳ <b>Separação em andamento!</b><br>Operador: <b>${operador}</b> | Fornecedor: <b>${fornecedor}</b> (${caixas} cx).<br>Medição iniciada às: <b>${horaFormatada} hrs</b>.`;
-        document.getElementById("statusPanelForn").innerHTML = textoStatus;
+        document.getElementById("statusPanelForn").innerHTML = `⏳ <b>Cronômetro Rodando...</b><br>Funcionário: <b>${operador}</b> | Fornecedor: <b>${fornecedor}</b>.<br>Iniciado às ${horaFormatada}.`;
 
         document.getElementById("btnFornIniciar").disabled = true;
         document.getElementById("btnFornFinalizar").disabled = false;
         bloquearInputsForn(true);
 
-        salvarEstadoFornAtual(textoStatus);
+        localStorage.setItem("estadoFornSalvo", JSON.stringify({
+            tFornInicio: tFornInicio, operador: operador, fornecedor: fornecedor, caixas: caixas
+        }));
     }
 
     function finalizarForn() {
+        document.getElementById("btnFornFinalizar").disabled = true;
+        document.getElementById("statusPanelForn").innerHTML = `⚙️ <b>Salvando e processando dados...</b> Por favor, aguarde.`;
+
         const tFornFim = Date.now();
         const diferencaMilissegundos = tFornFim - tFornInicio;
         
-        // Conversão exata para minutos (com uma casa decimal para precisão)
-        const tempoFornMinutos = ((diferencaMilissegundos / 1000) / 60).toFixed(1);
+        const tempoMinutosNum = (diferencaMilissegundos / 1000) / 60;
+        const tempoMinutosFormatado = tempoMinutosNum.toFixed(1);
 
         const operador = document.getElementById("fornOperador").value.trim();
         const fornecedor = document.getElementById("fornNome").value.trim();
         const caixas = Number(document.getElementById("fornCaixas").value);
 
-        // Velocidade média (Caixas por Minuto ou por Hora)
-        const tempoFornHoras = Number(tempoFornMinutos) / 60;
-        const cxPorHora = tempoFornHoras > 0 ? (caixas / tempoFornHoras).toFixed(1) : 0;
-
+        
+        const cxPorMin = tempoMinutosNum > 0 ? Number((caixas / tempoMinutosNum).toFixed(2)) : 0;
+        const tempoHoras = tempoMinutosNum / 60;
+        const cxPorHora = tempoHoras > 0 ? Number((caixas / tempoHoras).toFixed(1)) : 0;
+        
         const dataHoje = new Date().toLocaleDateString('pt-BR');
 
-        const novoRegistroForn = {
+        const pacoteDados = {
             data: dataHoje,
             operador: operador,
             fornecedor: fornecedor,
             caixas: caixas,
-            tempo: `${tempoFornMinutos} min`,
-            velocidade: `${cxPorHora} cx/h`
+            tempo: Number(tempoMinutosFormatado), 
+            cxMinuto: cxPorMin,                  
+            cxHora: cxPorHora                    
         };
 
-        const historicoForn = obterHistoricoForn();
-        historicoForn.push(novoRegistroForn);
-        localStorage.setItem("historicoFornecedoresCME", JSON.stringify(historicoForn));
-
-        localStorage.removeItem("estadoFornAtual");
-
-        atualizarTabelaForn();
-        bloquearInputsForn(false);
-        resetarBotoesForn();
-        limparInputsForn();
-
-        document.getElementById("statusPanelForn").innerHTML = `✅ <b>Mapeamento do Fornecedor registrado!</b> Operador ${operador} processou ${fornecedor} em ${tempoFornMinutos} min.`;
-    }
-
-    function atualizarTabelaForn() {
-        const corpo = document.getElementById("tabelaCorpoForn");
-        corpo.innerHTML = "";
-        const historicoForn = obterHistoricoForn();
-
-        // Filtros da tela 2
-        const filtroOp = document.getElementById("buscaFornOp").value.trim().toLowerCase();
-        const filtroForn = document.getElementById("buscaFornNome").value.trim().toLowerCase();
-
-        historicoForn.forEach((reg, index) => {
-            // Regras do filtro cruzado (Operador + Fornecedor)
-            if (filtroOp && !reg.operador.toLowerCase().includes(filtroOp)) return;
-            if (filtroForn && !reg.fornecedor.toLowerCase().includes(filtroForn)) return;
-
-            const linha = `<tr>
-                <td>${reg.data}</td>
-                <td>${reg.operador}</td>
-                <td>${reg.fornecedor}</td>
-                <td>${reg.caixas} cx</td>
-                <td>${reg.tempo}</td>
-                <td><strong>${reg.velocidade}</strong></td>
-                <td>
-                    <button class="btn-delete-row" onclick="excluirItemForn(${index})">✕</button>
-                </td>
-            </tr>`;
-            corpo.innerHTML += linha;
+        fetch(URL_GOOGLE_SHEETS, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(pacoteDados)
+        })
+        .then(() => {
+            localStorage.removeItem("estadoFornSalvo");
+            bloquearInputsForn(false);
+            document.getElementById("btnFornIniciar").disabled = false;
+            
+            document.getElementById("fornNome").value = "";
+            document.getElementById("fornCaixas").value = "";
+            document.getElementById("statusPanelForn").innerHTML = `✅ <b>Sucesso!</b> Dados salvos diretamente na nuvem do Gestor. Pronto para o próximo fornecedor.`;
+        })
+        .catch(error => {
+            console.error(error);
+            alert("Erro ao enviar para o servidor. Tente novamente.");
+            document.getElementById("btnFornFinalizar").disabled = false;
         });
-    }
-
-    function excluirItemForn(index) {
-        let historicoForn = obterHistoricoForn();
-        if (confirm(`Deseja realmente excluir este registro de fornecedor?`)) {
-            historicoForn.splice(index, 1);
-            localStorage.setItem("historicoFornecedoresCME", JSON.stringify(historicoForn));
-            atualizarTabelaForn();
-        }
     }
 
     function bloquearInputsForn(status) {
@@ -703,57 +300,26 @@
         document.getElementById("fornCaixas").disabled = status;
     }
 
-    function resetarBotoesForn() {
-        document.getElementById("btnFornIniciar").disabled = false;
-        document.getElementById("btnFornFinalizar").disabled = true;
-    }
-
-    function limparInputsForn() {
-        document.getElementById("fornOperador").value = "";
-        document.getElementById("fornNome").value = "";
-        document.getElementById("fornCaixas").value = "";
-    }
-
-    function limparRegistrosForn() {
-        if (confirm("Tem certeza de que deseja apagar todo o histórico de fornecedores mapeados?")) {
-            localStorage.removeItem("historicoFornecedoresCME");
-            atualizarTabelaForn();
-            document.getElementById("statusPanelForn").innerHTML = "<b>Status:</b> Histórico individual de fornecedores limpo.";
-        }
-    }
-
-    // Antiqueda de dados para a tela de Fornecedores
-    function salvarEstadoFornAtual(statusTexto) {
-        const estado = {
-            tFornInicio: tFornInicio,
-            statusPanelHtml: statusTexto,
-            btnFornIniciarDisabled: document.getElementById("btnFornIniciar").disabled,
-            btnFornFinalizarDisabled: document.getElementById("btnFornFinalizar").disabled
-        };
-        localStorage.setItem("estadoFornAtual", JSON.stringify(estado));
-    }
-
-    function verificarFornPendente() {
-        const estadoSalvo = localStorage.getItem("estadoFornAtual");
-        if (estadoSalvo) {
-            const estado = JSON.parse(estadoSalvo);
-            if (confirm("Detectamos que um cronômetro de fornecedor estava rodando. Deseja retomar o tempo?")) {
+    function verificarRecuperacao() {
+        const salvo = localStorage.getItem("estadoFornSalvo");
+        if (salvo) {
+            const estado = JSON.parse(salvo);
+            if (confirm("Identificamos uma contagem que foi interrompida. Deseja retomar o cronômetro?")) {
                 tFornInicio = estado.tFornInicio;
-                document.getElementById("btnFornIniciar").disabled = estado.btnFornIniciarDisabled;
-                document.getElementById("btnFornFinalizar").disabled = estado.btnFornFinalizarDisabled;
-                document.getElementById("statusPanelForn").innerHTML = estado.statusPanelHtml;
+                document.getElementById("fornOperador").value = estado.operador;
+                document.getElementById("fornNome").value = estado.fornecedor;
+                document.getElementById("fornCaixas").value = estado.caixas;
+
+                document.getElementById("btnFornIniciar").disabled = true;
+                document.getElementById("btnFornFinalizar").disabled = false;
                 bloquearInputsForn(true);
             } else {
-                localStorage.removeItem("estadoFornAtual");
+                localStorage.removeItem("estadoFornSalvo");
             }
         }
     }
 
-    // Inicialização ao carregar a página
-    atualizarTabela();
-    atualizarTabelaForn();
-    verificarProcessoPendente();
-    verificarFornPendente();
+    verificarRecuperacao();
 </script>
 
 </body>
