@@ -91,14 +91,14 @@
 
         .actions {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             margin-bottom: 20px;
         }
 
         button {
             flex: 1;
-            padding: 15px;
-            font-size: 14px;
+            padding: 14px 8px;
+            font-size: 12px;
             font-weight: 900;
             border: none;
             border-radius: 4px;
@@ -112,6 +112,12 @@
 
         .btn-start { background-color: var(--cat-yellow); color: var(--cat-black); }
         .btn-start:hover { background-color: #e6b800; }
+
+        .btn-pause { background-color: #f0ad4e; color: var(--cat-black); }
+        .btn-pause:hover { background-color: #ec971f; }
+
+        .btn-return { background-color: #5bc0de; color: white; }
+        .btn-return:hover { background-color: #31b0d5; }
 
         .btn-end { background-color: #d9534f; color: white; }
         .btn-end:hover { background-color: #c9302c; }
@@ -170,7 +176,7 @@
 
             button {
                 padding: 16px;
-                font-size: 15px;
+                font-size: 14px;
                 width: 100%;
             }
 
@@ -179,7 +185,6 @@
                 padding: 12px;
             }
         }
-        
     </style>
 </head>
 <body>
@@ -203,8 +208,10 @@
     </div>
 
     <div class="actions">
-        <button id="btnFornIniciar" class="btn-start" onclick="iniciarForn()">1. Iniciar Separação</button>
-        <button id="btnFornFinalizar" class="btn-end" onclick="finalizarForn()" disabled>2. Finalizar e Enviar</button>
+        <button id="btnFornIniciar" class="btn-start" onclick="iniciarForn()">1. Iniciar</button>
+        <button id="btnFornIntervalo" class="btn-pause" onclick="pausaIntervalo()" disabled>2. Intervalo</button>
+        <button id="btnFornRetorno" class="btn-return" onclick="retornarIntervalo()" disabled>3. Voltar</button>
+        <button id="btnFornFinalizar" class="btn-end" onclick="finalizarForn()" disabled>4. Finalizar</button>
     </div>
 
     <div id="statusPanelForn" class="status-panel">
@@ -213,7 +220,9 @@
 </div>
 
 <script>
-    let tFornInicio = null;
+    let tFornInicio;
+    let tempoPausadoInicio;
+    let tempoTotalPausa = 0;
     
     const URL_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbyT6aCdMkO--7ZXcuPRM_1wNgGOLLgqtSLacwBjERO6iJcncVv2xZPTSuwqki1dK8J8Sw/exec";
 
@@ -228,34 +237,71 @@
         }
 
         tFornInicio = Date.now();
+        tempoTotalPausa = 0;
         const horaFormatada = new Date(tFornInicio).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
         document.getElementById("statusPanelForn").innerHTML = `⏳ <b>Cronômetro Rodando...</b><br>Funcionário: <b>${operador}</b> | Fornecedor: <b>${fornecedor}</b>.<br>Iniciado às ${horaFormatada}.`;
 
         document.getElementById("btnFornIniciar").disabled = true;
+        document.getElementById("btnFornIntervalo").disabled = false;
         document.getElementById("btnFornFinalizar").disabled = false;
         bloquearInputsForn(true);
 
-        localStorage.setItem("estadoFornSalvo", JSON.stringify({
-            tFornInicio: tFornInicio, operador: operador, fornecedor: fornecedor, caixas: caixas
-        }));
+        salvarEstadoLocalStorage();
+    }
+
+    function pausaIntervalo() {
+        tempoPausadoInicio = Date.now();
+
+        document.getElementById("btnFornIntervalo").disabled = true;
+        document.getElementById("btnFornRetorno").disabled = false;
+        
+        document.getElementById("statusPanelForn").innerHTML = `☕ <b>Em Intervalo / Refeição...</b><br>O tempo do cronômetro está congelado temporariamente.`;
+
+        salvarEstadoLocalStorage();
+    }
+
+    function retornarIntervalo() {
+        if (tempoPausadoInicio) {
+            const agora = Date.now();
+            tempoTotalPausa += (agora - tempoPausadoInicio);
+            tempoPausadoInicio = null;
+        }
+
+        document.getElementById("btnFornRetorno").disabled = true;
+        document.getElementById("btnFornIntervalo").disabled = false;
+        
+        const operador = document.getElementById("fornOperador").value;
+        const fornecedor = document.getElementById("fornNome").value;
+        
+        document.getElementById("statusPanelForn").innerHTML = `⏳ <b>Cronômetro Retomado!</b><br>Funcionário: <b>${operador}</b> | Fornecedor: <b>${fornecedor}</b>.`;
+
+        salvarEstadoLocalStorage();
     }
 
     function finalizarForn() {
         document.getElementById("btnFornFinalizar").disabled = true;
+        document.getElementById("btnFornIntervalo").disabled = true;
+        document.getElementById("btnFornRetorno").disabled = true;
+
         document.getElementById("statusPanelForn").innerHTML = `⚙️ <b>Salvando e processando dados...</b> Por favor, aguarde.`;
 
         const tFornFim = Date.now();
-        const diferencaMilissegundos = tFornFim - tFornInicio;
         
-        const tempoMinutosNum = (diferencaMilissegundos / 1000) / 60;
+        if (tempoPausadoInicio) {
+            tempoTotalPausa += (tFornFim - tempoPausadoInicio);
+        }
+
+        const diferencaMilissegundos = (tFornFim - tFornInicio) - tempoTotalPausa;
+        const milissegundosLiquidos = diferencaMilissegundos > 0 ? diferencaMilissegundos : 0;
+        
+        const tempoMinutosNum = (milissegundosLiquidos / 1000) / 60;
         const tempoMinutosFormatado = tempoMinutosNum.toFixed(1);
 
         const operador = document.getElementById("fornOperador").value.trim();
         const fornecedor = document.getElementById("fornNome").value.trim();
         const caixas = Number(document.getElementById("fornCaixas").value);
 
-        
         const cxPorMin = tempoMinutosNum > 0 ? Number((caixas / tempoMinutosNum).toFixed(2)) : 0;
         const tempoHoras = tempoMinutosNum / 60;
         const cxPorHora = tempoHoras > 0 ? Number((caixas / tempoHoras).toFixed(1)) : 0;
@@ -281,11 +327,15 @@
         .then(() => {
             localStorage.removeItem("estadoFornSalvo");
             bloquearInputsForn(false);
+            
             document.getElementById("btnFornIniciar").disabled = false;
+            document.getElementById("btnFornIntervalo").disabled = true;
+            document.getElementById("btnFornRetorno").disabled = true;
+            document.getElementById("btnFornFinalizar").disabled = true;
             
             document.getElementById("fornNome").value = "";
             document.getElementById("fornCaixas").value = "";
-            document.getElementById("statusPanelForn").innerHTML = `✅ <b>Sucesso!</b> Dados salvos diretamente na nuvem do Gestor. Pronto para o próximo fornecedor.`;
+            document.getElementById("statusPanelForn").innerHTML = `✅ <b>Sucesso!</b> Dados salvos na nuvem (${tempoMinutosFormatado} min líquidos). Pronto para o próximo fornecedor.`;
         })
         .catch(error => {
             console.error(error);
@@ -300,18 +350,47 @@
         document.getElementById("fornCaixas").disabled = status;
     }
 
+    function salvarEstadoLocalStorage() {
+        const operador = document.getElementById("fornOperador").value;
+        const fornecedor = document.getElementById("fornNome").value;
+        const caixas = document.getElementById("fornCaixas").value;
+
+        localStorage.setItem("estadoFornSalvo", JSON.stringify({
+            tFornInicio: tFornInicio,
+            tempoTotalPausa: tempoTotalPausa,
+            tempoPausadoInicio: tempoPausadoInicio,
+            operador: operador,
+            fornecedor: fornecedor,
+            caixas: caixas
+        }));
+    }
+
     function verificarRecuperacao() {
         const salvo = localStorage.getItem("estadoFornSalvo");
         if (salvo) {
             const estado = JSON.parse(salvo);
             if (confirm("Identificamos uma contagem que foi interrompida. Deseja retomar o cronômetro?")) {
                 tFornInicio = estado.tFornInicio;
+                tempoTotalPausa = estado.tempoTotalPausa || 0;
+                tempoPausadoInicio = estado.tempoPausadoInicio || null;
+
                 document.getElementById("fornOperador").value = estado.operador;
                 document.getElementById("fornNome").value = estado.fornecedor;
                 document.getElementById("fornCaixas").value = estado.caixas;
 
                 document.getElementById("btnFornIniciar").disabled = true;
                 document.getElementById("btnFornFinalizar").disabled = false;
+                
+                if (tempoPausadoInicio) {
+                    document.getElementById("btnFornIntervalo").disabled = true;
+                    document.getElementById("btnFornRetorno").disabled = false;
+                    document.getElementById("statusPanelForn").innerHTML = `☕ <b>Em Intervalo / Refeição...</b>`;
+                } else {
+                    document.getElementById("btnFornIntervalo").disabled = false;
+                    document.getElementById("btnFornRetorno").disabled = true;
+                    document.getElementById("statusPanelForn").innerHTML = `⏳ <b>Cronômetro Retomado!</b>`;
+                }
+
                 bloquearInputsForn(true);
             } else {
                 localStorage.removeItem("estadoFornSalvo");
